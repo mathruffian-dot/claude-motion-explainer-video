@@ -1,0 +1,123 @@
+{
+  "_comment": "Image + video layer. web = licensed photos (credits in assets/images/web/CREDITS.md); gen = Codex imagegen stills; assets/videos/h3 = H3 (local MiniMax H3) AI video clips, first frame = the matching Codex still. All AI media labelled AI 生成 on screen.",
+  "speirling": {
+    "src": "assets/images/web/speirling.jpg",
+    "crop": [
+      40,
+      400,
+      1920,
+      1620
+    ],
+    "size": [
+      1200,
+      780
+    ],
+    "mode": "duotone"
+  },
+  "mmu": {
+    "src": "assets/images/web/mmu.jpg",
+    "crop": [
+      430,
+      60,
+      1590,
+      1220
+    ],
+    "size": [
+      900,
+      900
+    ],
+    "mode": "duotone"
+  },
+  "hook-loop": {
+    "src": "assets/images/gen/hook-loop.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "keep",
+    "darken": 0.9
+  },
+  "hover-jets": {
+    "src": "assets/images/gen/hover-jets.png",
+    "size": [
+      1920,
+      1080
+    ],
+    "mode": "keep",
+    "darken": 0.9
+  },
+  "placements": [
+    {
+      "frame": "01-hook",
+      "video": "assets/videos/gen/v-hook/clip.mp4",
+      "mode": "background",
+      "after": "01-hook-bg",
+      "opacity": 0.55,
+      "at": 0.0,
+      "duration": 8.22,
+      "credit": "AI 生成影片（H3）"
+    },
+    {
+      "frame": "03-suction",
+      "image": "speirling",
+      "mode": "card",
+      "label_side": "right",
+      "box": [
+        700,
+        96,
+        420,
+        273
+      ],
+      "text_width": 400,
+      "at": 11.9,
+      "label": "真的做得到：英國 McMurtry Spéirling 風扇吸地車，2022 年已實際倒掛行駛",
+      "credit": "Photo: Calreyn88 · CC BY-SA 4.0 · Wikimedia Commons"
+    },
+    {
+      "frame": "05-thrusters",
+      "image": "mmu",
+      "mode": "card",
+      "box": [
+        1520,
+        430,
+        320,
+        320
+      ],
+      "at": 10.6,
+      "label": "老前輩：NASA 載人機動裝置（1984）也用氮氣冷氣推進器",
+      "credit": "Photo: NASA · Public domain"
+    },
+    {
+      "frame": "09-recap",
+      "video": "assets/videos/gen/v-hover/clip.mp4",
+      "mode": "background",
+      "after": "09-recap-ground",
+      "opacity": 0.45,
+      "at": 4.5,
+      "duration": 5.7,
+      "credit": "AI 生成影片（H3）",
+      "hide": [
+        "09-recap-car"
+      ],
+      "hide_at": 0.0
+    },
+    {
+      "frame": "06-limits",
+      "video": "assets/videos/gen/v-landing/clip.mp4",
+      "mode": "card",
+      "label_side": "right",
+      "box": [
+        90,
+        90,
+        560,
+        315
+      ],
+      "text_width": 380,
+      "at": 1.7,
+      "duration": 5.0,
+      "out": 6.5,
+      "label": "氣瓶一空，推力就沒了：只能「跳一下」，然後落回地面",
+      "credit": "AI 生成影片（H3）· 示意"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{ "duration": 5.0, "size": [1344, 768], "seed": 2026, "draft": true,
+  "style": "a cinematic, photoreal night-time automotive commercial shot, high contrast, deep near-black shadows with orange rim light, no text, no logos",
+  "setting": "a dark wet runway at night with small orange edge lights",
+  "first_frame": "../../../images/gen/hover-jets.png",
+  "subjects": [ {"key": "car", "desc": "a sleek unbranded electric hypercar, dark grey with orange rim light, no badges or text"} ],
+  "shots": [ {"camera": "The camera holds a static shot on a tripod.",
+              "action": "The car hovers about one metre above the runway on four bright white jets of compressed air; the jets sputter and stop, the car drops straight down and lands on its wheels with a small bounce, and the white mist slowly drifts away.",
+              "dialogue": [], "at": null} ],
+  "soundscape": "A loud hiss of compressed air that sputters out, a heavy thump as the car lands, then quiet dripping on the wet runway.",
+  "music": "N/A" }

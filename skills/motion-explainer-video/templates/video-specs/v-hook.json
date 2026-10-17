@@ -1,0 +1,10 @@
+{ "duration": 8.5, "size": [1344, 768], "seed": 1015, "draft": true,
+  "style": "a cinematic, photoreal night-time automotive commercial shot, high contrast, deep near-black shadows with orange rim light, no text, no logos",
+  "setting": "a giant curved concrete loop track at night high above a valley of city lights",
+  "first_frame": "../../../images/gen/hook-loop.png",
+  "subjects": [ {"key": "car", "desc": "a sleek unbranded low two-seat electric hypercar, dark grey with orange rim light, no badges or text"} ],
+  "shots": [ {"camera": "The camera tracks smoothly alongside the car at a medium speed.",
+              "action": "The car drives upside down along the inside ceiling of the loop, held firmly against the concrete; thin white air streaks are pulled from under its body; the orange track lights streak past.",
+              "dialogue": [], "at": null} ],
+  "soundscape": "A deep electric motor whine and a strong rushing wind, echoing off the concrete track.",
+  "music": "N/A" }

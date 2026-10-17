@@ -1,0 +1,4 @@
+{
+  "_comment": "How THIS machine generates MiniMax H3 clips. {spec} and {out} are filled in; the runner must leave <out>/clip.mp4. Example: a local script driving ComfyUI.",
+  "runner": ["<python of your H3 env>", "<path/to/your_h3_runner.py>", "{spec}", "--out", "{out}"]
+}
