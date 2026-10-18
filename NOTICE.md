@@ -21,6 +21,8 @@
 - [Breeze TTS 2](https://github.com/breezeblue-ai/breeze-tts) — inference code Apache-2.0; model
   weights and generated audio under the BreezeBlue Research and Non-Commercial License.
 
+- `scripts/h3_runner.py` builds the graph of ComfyUI's official "MiniMax H3 Reference to Video" template and
+  defaults to the official model files from https://huggingface.co/Comfy-Org/MiniMax-H3 (not included).
 - [MiniMax H3](https://github.com/MiniMax-AI/MiniMax-H3) — used, not included, to generate video
   clips; model and outputs under the MiniMax H3 Community License (read it before use, incl. its use
   restrictions). [ComfyUI](https://github.com/Comfy-Org/ComfyUI) (GPL-3.0) is one way to run it.

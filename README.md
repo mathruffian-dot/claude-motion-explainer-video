@@ -38,6 +38,7 @@
 - `ai_video.py prompt / run / check`：
   - `prompt`：把 shot spec 組成 H3 官方六段格式的 prompt。
   - `run`：呼叫你這台電腦設定的生成器，寫在 `video_config.json` 的 `runner`，本機腳本或 ComfyUI 都可以。
+- `h3_runner.py`：**參考 runner**，直接可用。透過 ComfyUI 的 HTTP API 生成一段 H3 影片：用官方「MiniMax H3 Reference to Video」模板的設定，第一格固定成你給的那張圖；`"draft": true` 改用官方 4 步 Lightning LoRA，快約 4 倍（RTX 5090 實測，5 秒片段：76 秒對 297 秒），適合先看動作對不對。ComfyUI 可以在本機，也可以在別台電腦（例如雲端 GPU）。先跑 `python h3_runner.py --check` 確認伺服器、節點和模型檔都在。
   - `check`：每段平均抽 8 格，拼成 contact sheet 給你檢查。
 - `place_media.py`：把圖片或影片放進每一格。它會自動遵守 HyperFrames 的影片規則：video 一定要有 id、不能放在有計時的元素裡、播放由框架控制、影片播完前把卡片淡出。
 - `fix_voice.py audition / apply`：整支片做完才發現某個字唸錯（例如「Roadster」「倒掛」「輪胎」）時使用。
@@ -47,7 +48,7 @@
 ## 需要的環境
 
 - Node.js 22+、ffmpeg、Python 3 + Pillow + fonttools；HyperFrames（`npm install -g hyperframes`）。
-- **AI 影片（選配）**：MiniMax H3，在本機用 ComfyUI 跑（見[官方說明](https://github.com/MiniMax-AI/MiniMax-H3)，授權為 MiniMax H3 Community License）。需要大顯示記憶體的 NVIDIA GPU：本機實測生成時用了約 26 GB。生成器要自己接：在 `video_config.json` 設定一個 runner 指令，規格見 [`ai-video.md`](skills/motion-explainer-video/references/ai-video.md) 的「runner 規格」。沒有 H3 也能用這個技能：AI 影片改成只給 prompt、用靜態圖代替，或不放。
+- **AI 影片（選配）**：MiniMax H3，在本機用 ComfyUI 跑（見[官方說明](https://github.com/MiniMax-AI/MiniMax-H3)，授權為 MiniMax H3 Community License）。需要大顯示記憶體的 NVIDIA GPU：本機實測生成時用了約 26 GB。設定方式：裝好 ComfyUI（0.36 以上，內建 H3 節點），把官方模型檔（[Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)：`minimax_h3_ref2va_pruned_int8_convrot`、`qwen3vl_32b_minimax_h3_nvfp4_awq`、兩個 VAE，選配 Lightning LoRA）放進它的 `models/`，再把 `templates/video_config.example.json` 複製成專案的 `video_config.json`，它預設就是呼叫 `h3_runner.py`。想用自己的生成方式，runner 規格見 [`ai-video.md`](skills/motion-explainer-video/references/ai-video.md)。沒有 H3 也能用這個技能：AI 影片改成只給 prompt、用靜態圖代替，或不放。
   - 沒有這種硬體的話，可以用 `ai_video.py prompt` 產生 prompt，再拿到別的地方生成，把 `clip.mp4` 放回專案。
 - 生成圖（選用）：Codex CLI（測試版本 0.162.1），先用 `codex login` 登入，使用它內建的 image_gen，不需要另外的 API key。如果你用的 agent 本身就是 Codex，可以直接在對話裡用 image_gen 產圖，存進 `assets/images/gen/`，不必透過 `codex_images.py`。
 - 旁白：edge-tts（預設，不需要 GPU）或 Breeze TTS 2（本機 GPU，僅限非商業用途）。

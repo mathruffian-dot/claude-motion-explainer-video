@@ -146,7 +146,7 @@ hyperframes lint && hyperframes check
 1. **規劃**：每支片 2–4 段。用在開場的鉤子、一個拍不到但正好對上旁白的動作（例如「只能跳一下」→ 車子落地）、收尾的情緒。需要精確數字或受力方向的畫面仍然交給線稿。
 2. **第一格用 Codex 靜態圖**：先照 7.5 節生成符合主題配色的圖，H3 再從這張圖開始動，影片和片子的風格才會一致。
 3. **寫 spec**：`assets/videos/gen/specs/<name>.json`（範例在 `templates/video-specs/`）。每段 4–15 秒，主體寫「沒有品牌、沒有文字」，動作寫成一句清楚的事件，再加上相機運動和聲音描述。
-4. **生成**：`python <me>/scripts/ai_video.py prompt --project .`（官方六段格式）→ `run`（需要 `video_config.json` 的 runner，見 `<me>/templates/video_config.example.json` 和 `references/ai-video.md` 的「runner 規格」）。沒有 runner 的話，給使用者 `prompt.txt` 和第一格，請他用 ComfyUI 的官方 MiniMax H3 R2V 模板生成，存成 `assets/videos/gen/<name>/clip.mp4`。
+4. **生成**：`python <me>/scripts/ai_video.py prompt --project .`（官方六段格式）→ `run`（需要 `video_config.json` 的 runner：把 `<me>/templates/video_config.example.json` 複製到專案，預設呼叫參考 runner `<me>/scripts/h3_runner.py`；先跑 `h3_runner.py --check` 確認 ComfyUI 和模型都在。自己的生成方式見 `references/ai-video.md` 的「runner 規格」）。沒有 runner 的話，給使用者 `prompt.txt` 和第一格，請他用 ComfyUI 的官方 MiniMax H3 R2V 模板生成，存成 `assets/videos/gen/<name>/clip.mp4`。
 5. **檢查**：`python <me>/scripts/ai_video.py check --project .`，**每一張 `check-1.png` 都要親眼看**：有沒有變形、多出零件、文字或 logo、動作時間點對不對得上旁白。不合格就換 seed 重跑。
 6. **擺放**：在 `media.json` 的 `placements` 用 `"video": "assets/videos/gen/<name>/clip.mp4"`，加上 `duration`，必要時加 `out`（影片結束前把卡片淡出）。在 `theme.py` 之後跑 `place_media.py`，然後 `hyperframes lint`（video 一定要有 id、不能放在有計時的元素裡）和 `hyperframes check`。
 7. 畫面標示「AI 生成影片（H3）」；影片一律靜音，聲音只用旁白。

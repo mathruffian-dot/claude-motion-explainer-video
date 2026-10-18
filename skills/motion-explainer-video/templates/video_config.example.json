@@ -1,4 +1,4 @@
 {
-  "_comment": "How THIS machine generates MiniMax H3 clips. Placeholders: {spec} = shot spec JSON, {out} = clip folder, {prompt} = <out>/prompt.txt (official six-section prompt), {first_frame} = absolute path of the first-frame still (empty if none). The runner must write <out>/clip.mp4. Example: a local script that sends prompt + first frame to ComfyUI's official MiniMax H3 R2V workflow (http://127.0.0.1:8188 by default). Other spec keys (seed, size, duration, draft ...) are for the runner to read from {spec}.",
-  "runner": ["<python of your H3 env>", "<path/to/your_h3_runner.py>", "{spec}", "--out", "{out}", "--prompt", "{prompt}", "--first-frame", "{first_frame}"]
+  "_comment": "How THIS machine generates MiniMax H3 clips. Default: the reference runner scripts/h3_runner.py talking to ComfyUI (replace <me> with this skill's folder, python with your interpreter; add \"--comfy\", \"http://host:8188\" for a remote server; check first with: python h3_runner.py --check). Placeholders filled in by ai_video.py run: {spec} = shot spec JSON, {out} = clip folder, {prompt} = <out>/prompt.txt, {first_frame} = absolute path of the first-frame still (empty if none). Any other runner works if it writes <out>/clip.mp4.",
+  "runner": ["python", "<me>/scripts/h3_runner.py", "{spec}", "--out", "{out}", "--prompt", "{prompt}", "--first-frame", "{first_frame}"]
 }

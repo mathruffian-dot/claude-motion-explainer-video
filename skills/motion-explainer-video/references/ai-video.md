@@ -33,7 +33,25 @@
 | `{prompt}` | 已組好的官方六段格式 prompt（`{out}/prompt.txt`），runner 直接用，不必自己組 |
 | `{first_frame}` | 第一格圖的絕對路徑（spec 沒有第一格時是空字串） |
 
-runner 要做的事：用 prompt 和第一格生成影片，把結果存成 `{out}/clip.mp4`（H.264；聲音會在放進片子時靜音）。成功與否只看 `clip.mp4` 有沒有出現，log 寫在 `{out}/gen.log`。ComfyUI 的做法：在 ComfyUI 載入官方 MiniMax H3 R2V 模板，用「Export (API)」存成 workflow JSON，runner 把 prompt 文字和第一格圖填進對應的節點，送到 `http://127.0.0.1:8188/prompt`，等完成後把輸出的影片複製成 `clip.mp4`。
+runner 要做的事：用 prompt 和第一格生成影片，把結果存成 `{out}/clip.mp4`（H.264；聲音會在放進片子時靜音）。成功與否只看 `clip.mp4` 有沒有出現，log 寫在 `{out}/gen.log`。
+
+**參考 runner：`scripts/h3_runner.py`**（只用 Python 標準函式庫）。它照 ComfyUI 官方「MiniMax H3 Reference to Video」模板組出 workflow：第一格同時當 `<Picture 1>` 並固定在第 0 格（`MiniMaxH3AddGuide`），所以影片一定從那張圖開始。圖片上傳、排程、下載都走 ComfyUI 的 HTTP API，ComfyUI 可以在別台電腦。
+
+```bash
+python <me>/scripts/h3_runner.py --check [--comfy http://127.0.0.1:8188]     # 伺服器、節點、模型檔都在嗎
+cp <me>/templates/video_config.example.json video_config.json                # 把 <me> 換成實際路徑
+python <me>/scripts/ai_video.py run --project .
+```
+
+| spec 欄位 | 作用 |
+|---|---|
+| `duration`、`size`、`seed` | 長度（換算成 17n+5 格，24 fps）、解析度、亂數種子 |
+| `steps` | 預設 20（官方模板） |
+| `"draft": true` | 官方 Lightning LoRA + 4 步，快約 4 倍（RTX 5090、5 秒 1344×768：76 秒對 20 步的 297 秒），先看動作；定稿拿掉再跑一次 |
+| `first_frame`／`last_frame` | 第一格（建議一定要有）／選配的最後一格 |
+| `lora` | 自己的 LoRA：`{"name": "...", "strength": 1.0}` 或一串 |
+
+模型檔預設是官方模板用的那幾個（[Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)），用 `--unet`／`--clip`／`--video-vae`／`--audio-vae`／`--draft-lora` 或同名環境變數（`H3_UNET` …）換掉。
 
 ## 沒有 H3 時
 
