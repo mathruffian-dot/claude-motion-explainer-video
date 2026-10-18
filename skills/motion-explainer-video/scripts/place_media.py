@@ -15,7 +15,7 @@ media.json "placements": [
   {"frame": "01-hook", "image": "hook-loop", "mode": "background", "after": "01-hook-bg",
    "opacity": 0.42, "at": 0.0, "credit": "AI 生成示意圖"},
   {"frame": "06-limits", "video": "assets/videos/gen/v-landing/clip.mp4", "mode": "card",
-   "box": [90, 90, 560, 315], "at": 1.7, "duration": 5.0, "out": 6.5, "label": "…", "credit": "AI 生成影片"}
+   "box": [90, 90, 560, 315], "at": 1.7, "duration": 5.0, "out": 6.2, "label": "…", "credit": "AI 生成影片"}
 ]
 video placements: "duration" (s on screen), optional "rate", "media_start", "brightness"; "out" fades the
 whole placement before the clip ends (a finished clip is hidden and would leave an empty frame).
@@ -23,10 +23,12 @@ whole placement before the clip ends (a finished clip is hidden and would leave 
 box = [x, y, w, h] of the image in canvas px (the card's label sits under it).
   python place_media.py --project <dir>
 """
+import sys
 import argparse
 import json
 import re
 from pathlib import Path
+sys.stdout.reconfigure(errors="replace")  # never crash printing Chinese or accented names on a non-UTF-8 console
 
 START, END = "<!-- PLACE:start -->", "<!-- PLACE:end -->"
 JS_START, JS_END = "<!-- PLACE-JS:start -->", "<!-- PLACE-JS:end -->"
@@ -60,10 +62,13 @@ def media(p, k, extra_style=""):
 def element(p, k, theme):
     pid = f"{p['frame']}-place-{k}"
     fg, bg = theme["fg"], theme["bg"]
+    fam = (theme.get("font") or {}).get("family")  # theme.json "font" wins, like all other text
+    LABEL = (f"\'{fam}\'," if fam else "") + "\'Hanken Grotesk\',\'NotoSansTC\',sans-serif"
+    MONO = (f"\'{fam}\'," if fam else "") + "\'DM Mono\',\'NotoSansTC\',monospace"
     if p["mode"] == "background":
         credit = ""
         if p.get("credit"):
-            credit = (f'<div style="position:absolute;right:80px;top:72px;font:500 15px \'DM Mono\',\'NotoSansTC\',monospace;'
+            credit = (f'<div style="position:absolute;right:80px;top:72px;font:500 15px {MONO};'
                       f'letter-spacing:0.06em;color:{fg};opacity:0.7;">{p["credit"]}</div>')
         bright = f"filter:brightness({p['brightness']});" if p.get("brightness") else ""
         return pid, (f'<div id="{pid}" style="position:absolute;inset:0;z-index:0;opacity:0;">'
@@ -79,14 +84,14 @@ def element(p, k, theme):
             f'<div id="{pid}" style="position:absolute;left:{x}px;top:{y}px;display:flex;gap:22px;align-items:flex-end;z-index:40;opacity:0;">'
             f'{frame_box}'
             f'<div style="width:{tw}px;padding-bottom:4px;">'
-            f'<div style="font:600 22px \'Hanken Grotesk\',\'NotoSansTC\',sans-serif;color:{fg};line-height:1.35;">{label}</div>'
-            f'<div style="margin-top:8px;font:400 14px \'DM Mono\',\'NotoSansTC\',monospace;letter-spacing:0.04em;color:{fg};opacity:0.72;line-height:1.4;">{credit}</div>'
+            f'<div style="font:600 22px {LABEL};color:{fg};line-height:1.35;">{label}</div>'
+            f'<div style="margin-top:8px;font:400 14px {MONO};letter-spacing:0.04em;color:{fg};opacity:0.72;line-height:1.4;">{credit}</div>'
             f"</div></div>")
     html = (
         f'<div id="{pid}" style="position:absolute;left:{x}px;top:{y}px;width:{w}px;z-index:40;opacity:0;">'
         f'{frame_box}'
-        f'<div style="margin-top:10px;font:600 21px \'Hanken Grotesk\',\'NotoSansTC\',sans-serif;color:{fg};line-height:1.3;">{label}</div>'
-        f'<div style="margin-top:4px;font:400 14px \'DM Mono\',\'NotoSansTC\',monospace;letter-spacing:0.04em;color:{fg};opacity:0.72;">{credit}</div>'
+        f'<div style="margin-top:10px;font:600 21px {LABEL};color:{fg};line-height:1.3;">{label}</div>'
+        f'<div style="margin-top:4px;font:400 14px {MONO};letter-spacing:0.04em;color:{fg};opacity:0.72;">{credit}</div>'
         f"</div>"
     )
     return pid, html
@@ -123,6 +128,11 @@ def main():
     spec = json.loads(spec_path.read_text(encoding="utf-8"))
     by_frame = {}
     for k, p in enumerate(spec.get("placements", [])):
+        if p.get("video") and p.get("out") is not None and p.get("duration"):
+            end = float(p.get("at", 0)) + float(p["duration"])
+            if float(p["out"]) + 0.45 > end + 1e-6:
+                print(f'warning: {p["frame"]} {p["video"]}: "out" {p["out"]} + 0.45 s fade ends after the clip '
+                      f'({end:.2f} s) — the card shows an empty box; use "out" <= {end - 0.5:.2f}')
         by_frame.setdefault(p["frame"], []).append((k, p))
     for f in sorted((project / "compositions" / "frames").glob("*.html")):
         t = strip_previous(f.read_text(encoding="utf-8"))

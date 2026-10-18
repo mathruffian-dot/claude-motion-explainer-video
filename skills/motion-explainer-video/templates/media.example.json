@@ -1,5 +1,5 @@
 {
-  "_comment": "Image + video layer. web = licensed photos (credits in assets/images/web/CREDITS.md); gen = Codex imagegen stills; assets/videos/h3 = H3 (local MiniMax H3) AI video clips, first frame = the matching Codex still. All AI media labelled AI 生成 on screen.",
+  "_comment": "Image + video layer. web = licensed photos (credits in assets/images/web/CREDITS.md); gen = Codex imagegen stills; assets/videos/gen = MiniMax H3 AI video clips, first frame = the matching Codex still. All AI media labelled AI 生成 on screen.",
   "speirling": {
     "src": "assets/images/web/speirling.jpg",
     "crop": [
@@ -115,7 +115,7 @@
       "text_width": 380,
       "at": 1.7,
       "duration": 5.0,
-      "out": 6.5,
+      "out": 6.2,
       "label": "氣瓶一空，推力就沒了：只能「跳一下」，然後落回地面",
       "credit": "AI 生成影片（H3）· 示意"
     }

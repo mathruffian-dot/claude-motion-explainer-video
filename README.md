@@ -47,9 +47,9 @@
 ## 需要的環境
 
 - Node.js 22+、ffmpeg、Python 3 + Pillow + fonttools；HyperFrames（`npm install -g hyperframes`）。
-- **AI 影片**：MiniMax H3，在本機用 ComfyUI 跑（見[官方說明](https://github.com/MiniMax-AI/MiniMax-H3)，授權為 MiniMax H3 Community License）。需要大顯示記憶體的 NVIDIA GPU：本機實測生成時用了約 26 GB。
+- **AI 影片（選配）**：MiniMax H3，在本機用 ComfyUI 跑（見[官方說明](https://github.com/MiniMax-AI/MiniMax-H3)，授權為 MiniMax H3 Community License）。需要大顯示記憶體的 NVIDIA GPU：本機實測生成時用了約 26 GB。生成器要自己接：在 `video_config.json` 設定一個 runner 指令，規格見 [`ai-video.md`](skills/motion-explainer-video/references/ai-video.md) 的「runner 規格」。沒有 H3 也能用這個技能：AI 影片改成只給 prompt、用靜態圖代替，或不放。
   - 沒有這種硬體的話，可以用 `ai_video.py prompt` 產生 prompt，再拿到別的地方生成，把 `clip.mp4` 放回專案。
-- 生成圖（選用）：已登入的 Codex CLI。
+- 生成圖（選用）：Codex CLI（測試版本 0.162.1），先用 `codex login` 登入，使用它內建的 image_gen，不需要另外的 API key。如果你用的 agent 本身就是 Codex，可以直接在對話裡用 image_gen 產圖，存進 `assets/images/gen/`，不必透過 `codex_images.py`。
 - 旁白：edge-tts（預設，不需要 GPU）或 Breeze TTS 2（本機 GPU，僅限非商業用途）。
 - 先跑 `python skills/motion-explainer-video/scripts/hw_check.py`，它會依你的硬體給建議。
 
@@ -60,6 +60,10 @@ git clone https://github.com/mathruffian-dot/claude-motion-explainer-video.git
 cp -r claude-motion-explainer-video/skills/* ~/.claude/skills/        # Claude Code
 # Codex / 其他 agent：複製到 ~/.agents/skills/
 ```
+
+**給其他 agent（Codex、Gemini CLI 等）**：這些 skill 只用到終端機指令和一般的讀寫檔案，沒有 Claude 專屬的工具。兩個要注意的地方，`SKILL.md` 開頭都有寫：
+- 工具和 HyperFrames 官方 skill 的位置用代號 `<me>`、`<fe>` 表示，開工前先用一行指令找出實際路徑。
+- 「每格派一個 sub-agent 平行做」在沒有 sub-agent 的 agent 上改成一格一格依序做，結果一樣，只是比較慢。
 
 可以和基本版、圖片加強版一起安裝。三個 repo 共用的 `motion-design`、`review-loop` 內容完全一樣。
 
@@ -72,7 +76,7 @@ cp -r claude-motion-explainer-video/skills/* ~/.claude/skills/        # Claude C
 
 ## English
 
-The video edition of the claude-motion-explainer skills: narrated, captioned HyperFrames explainer animations with a licensed-photo layer and an **AI video layer** — MiniMax H3 clips generated from on-theme Codex stills (so footage matches the film's look), placed as muted backgrounds or cards under HyperFrames' media rules. AI footage is preferred over stock/news footage to avoid copyright problems. Also includes a pronunciation-fix tool that swaps one narration line for a re-take and time-stretches it clause by clause onto the original timing. See `skills/motion-explainer-video/SKILL.md`.
+The video edition of the claude-motion-explainer skills: narrated, captioned HyperFrames explainer animations with a licensed-photo layer and an **AI video layer** — MiniMax H3 clips generated from on-theme Codex stills (so footage matches the film's look), placed as muted backgrounds or cards under HyperFrames' media rules. AI footage is preferred over stock/news footage to avoid copyright problems. Also includes a pronunciation-fix tool that swaps one narration line for a re-take, time-stretched as a whole onto the original line length so no frame timing changes. See `skills/motion-explainer-video/SKILL.md`.
 
 ## 授權
 

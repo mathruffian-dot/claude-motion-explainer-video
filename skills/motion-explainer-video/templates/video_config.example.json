@@ -1,4 +1,4 @@
 {
-  "_comment": "How THIS machine generates MiniMax H3 clips. {spec} and {out} are filled in; the runner must leave <out>/clip.mp4. Example: a local script driving ComfyUI.",
-  "runner": ["<python of your H3 env>", "<path/to/your_h3_runner.py>", "{spec}", "--out", "{out}"]
+  "_comment": "How THIS machine generates MiniMax H3 clips. Placeholders: {spec} = shot spec JSON, {out} = clip folder, {prompt} = <out>/prompt.txt (official six-section prompt), {first_frame} = absolute path of the first-frame still (empty if none). The runner must write <out>/clip.mp4. Example: a local script that sends prompt + first frame to ComfyUI's official MiniMax H3 R2V workflow (http://127.0.0.1:8188 by default). Other spec keys (seed, size, duration, draft ...) are for the runner to read from {spec}.",
+  "runner": ["<python of your H3 env>", "<path/to/your_h3_runner.py>", "{spec}", "--out", "{out}", "--prompt", "{prompt}", "--first-frame", "{first_frame}"]
 }

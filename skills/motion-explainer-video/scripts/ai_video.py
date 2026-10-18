@@ -22,8 +22,9 @@ Shot spec — <project>/assets/videos/gen/specs/<name>.json (keep specs OUTSIDE 
   python ai_video.py run    --project <dir> [--only v-landing]   # generate with the runner in video_config.json
   python ai_video.py check  --project <dir> [--only v-landing]   # probe + contact sheet of each clip
 
-video_config.json (project root) — how THIS machine generates H3 clips; {spec} and {out} are filled in,
-and the runner must leave <out>/clip.mp4:
+video_config.json (project root) — how THIS machine generates H3 clips. Placeholders: {spec} (spec JSON),
+{out} (clip folder), {prompt} (<out>/prompt.txt, the official prompt), {first_frame} (absolute path of the
+still, "" if none). The runner must leave <out>/clip.mp4 (H.264 MP4, any audio — it is muted when placed):
   {"runner": ["<python of your H3 env>", "<path/to/your_h3_runner.py>", "{spec}", "--out", "{out}"]}
 No runner: `prompt` still writes prompt.txt + the first frame path; generate by hand (e.g. ComfyUI's
 official MiniMax H3 R2V template) and save the result as assets/videos/gen/<name>/clip.mp4.
@@ -34,6 +35,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+sys.stdout.reconfigure(errors="replace")  # never crash printing Chinese or accented names on a non-UTF-8 console
 
 SECTIONS = ["subject_definitions", "summary", "retention_analysis", "detailed_description",
             "overall_soundscape", "non_diegetic_music"]
@@ -112,7 +114,15 @@ def cmd_run(project, only):
         if (out / "clip.mp4").exists():
             print(f"[skip] {sp.stem} (delete clip.mp4 to regenerate)")
             continue
-        cmd = [a.replace("{spec}", str(sp)).replace("{out}", str(out)) for a in runner]
+        spec = json.loads(sp.read_text(encoding="utf-8"))
+        prompt = out / "prompt.txt"
+        if not prompt.exists():
+            prompt.write_text(build_prompt(spec), encoding="utf-8")
+        ff = (sp.parent / spec["first_frame"]).resolve() if spec.get("first_frame") else ""
+        # runner contract: {spec} spec JSON, {out} clip folder (must end with clip.mp4 in it),
+        # {prompt} the official six-section prompt, {first_frame} absolute path of the still ("" if none)
+        cmd = [a.replace("{spec}", str(sp)).replace("{out}", str(out)).replace("{prompt}", str(prompt))
+               .replace("{first_frame}", str(ff)) for a in runner]
         print(f"[run] {sp.stem}")
         with open(out / "gen.log", "w", encoding="utf-8") as log:
             subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)

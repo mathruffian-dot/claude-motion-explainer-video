@@ -22,6 +22,23 @@
 - prompt 用官方的六段格式。`ai_video.py prompt` 會自動組好；有官方 linter 的話可以拿來檢查。
 - 生成器不寫死在技能裡：每台電腦在 `video_config.json` 設定自己的 `runner`（本機腳本、ComfyUI API 都可以），技能只負責給它 spec 和輸出資料夾。
 
+## runner 規格
+
+`ai_video.py run` 對每個 spec 執行一次 `video_config.json` 的 `runner` 指令，把四個代號換成實際路徑：
+
+| 代號 | 內容 |
+|---|---|
+| `{spec}` | shot spec JSON。`seed`、`size`、`duration` 和任何額外欄位（例如快速模式的 `"draft": true`）都由 runner 自己讀 |
+| `{out}` | 這段影片的資料夾 `assets/videos/gen/<name>/` |
+| `{prompt}` | 已組好的官方六段格式 prompt（`{out}/prompt.txt`），runner 直接用，不必自己組 |
+| `{first_frame}` | 第一格圖的絕對路徑（spec 沒有第一格時是空字串） |
+
+runner 要做的事：用 prompt 和第一格生成影片，把結果存成 `{out}/clip.mp4`（H.264；聲音會在放進片子時靜音）。成功與否只看 `clip.mp4` 有沒有出現，log 寫在 `{out}/gen.log`。ComfyUI 的做法：在 ComfyUI 載入官方 MiniMax H3 R2V 模板，用「Export (API)」存成 workflow JSON，runner 把 prompt 文字和第一格圖填進對應的節點，送到 `http://127.0.0.1:8188/prompt`，等完成後把輸出的影片複製成 `clip.mp4`。
+
+## 沒有 H3 時
+
+這一層是選配。沒有 GPU、也沒有 H3 服務時，三個退路：只給使用者 `prompt.txt` 和第一格圖讓他自己生成；用同一張 Codex 靜態圖代替影片；或不放影片。見 SKILL.md 7.6。
+
 **本機實測（RTX 5090 32 GB，DMAD 4 步快速模式，只給第一格）**：8.5 秒的片段約 91 秒、5 秒約 58 秒、6 秒約 75 秒；生成時顯示記憶體用了約 26 GB。
 
 ## 檢查（一定要親眼看）
@@ -39,7 +56,7 @@
 
 ```json
 { "frame": "06-limits", "video": "assets/videos/gen/v-landing/clip.mp4", "mode": "card",
-  "label_side": "right", "box": [90, 90, 560, 315], "at": 1.7, "duration": 5.0, "out": 6.5,
+  "label_side": "right", "box": [90, 90, 560, 315], "at": 1.7, "duration": 5.0, "out": 6.2,
   "label": "氣瓶一空，推力就沒了：只能「跳一下」", "credit": "AI 生成影片（H3）· 示意" }
 ```
 
@@ -55,13 +72,13 @@ HyperFrames 對影片的硬規則（`place_media.py` 都處理好了，手寫時
 
 ```bash
 # 1. 第一格用的靜態圖（Codex）：見 images.md
-python scripts/codex_images.py --project .
+python <me>/scripts/codex_images.py --project .
 # 2. 寫 assets/videos/gen/specs/<name>.json（見 templates/video-specs/）
-python scripts/ai_video.py prompt --project .
-python scripts/ai_video.py run --project .        # 需要 video_config.json 的 runner
-python scripts/ai_video.py check --project .      # 看每一張 check-1.png
+python <me>/scripts/ai_video.py prompt --project .
+python <me>/scripts/ai_video.py run --project .        # 需要 video_config.json 的 runner
+python <me>/scripts/ai_video.py check --project .      # 看每一張 check-1.png
 # 3. 在 media.json 加 placements，然後：
-python scripts/theme.py --project .
-python scripts/place_media.py --project .
+python <me>/scripts/theme.py --project .
+python <me>/scripts/place_media.py --project .
 hyperframes lint && hyperframes check
 ```
