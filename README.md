@@ -45,6 +45,8 @@
   - `audition`：把多個候選的關鍵片段串成一個試聽檔，讓你用耳朵選。
   - `apply`：把選中的那一句**整句等比伸縮回原本的長度**（通常只差 ±5%），音量對齊原本那一句，再重算那一句的字幕時間。每一格的長度都不變，動畫不用重做。
 
+**需要 3D 的內容會自動用 three.js**（2026-11-16 起）：立體地形與等高線、分子、天體運行、立體圖形的展開與截面，做成嵌在 HyperFrames 裡的 three.js 格，一樣一格一格精準輸出、跟旁白對齊。照 [`references/threejs.md`](skills/motion-explainer-video/references/threejs.md)，從範本 [`templates/three_scene.example.html`](skills/motion-explainer-video/templates/three_scene.example.html) 改起。沒有獨立顯示卡也輸得出來：瀏覽器會改用軟體算 3D；一支 55 秒的 3D 片，桌機實測 2 分 43 秒，用 GPU 是 2 分 25 秒。
+
 ## 需要的環境
 
 - Node.js 22+、ffmpeg、Python 3 + Pillow + fonttools；HyperFrames（`npm install -g hyperframes`）。
@@ -77,7 +79,7 @@ cp -r claude-motion-explainer-video/skills/* ~/.claude/skills/        # Claude C
 
 ## English
 
-The video edition of the claude-motion-explainer skills: narrated, captioned HyperFrames explainer animations with a licensed-photo layer and an **AI video layer** — MiniMax H3 clips generated from on-theme Codex stills (so footage matches the film's look), placed as muted backgrounds or cards under HyperFrames' media rules. AI footage is preferred over stock/news footage to avoid copyright problems. Also includes a pronunciation-fix tool that swaps one narration line for a re-take, time-stretched as a whole onto the original line length so no frame timing changes. See `skills/motion-explainer-video/SKILL.md`.
+The video edition of the claude-motion-explainer skills: narrated, captioned HyperFrames explainer animations with a licensed-photo layer and an **AI video layer** — MiniMax H3 clips generated from on-theme Codex stills (so footage matches the film's look), placed as muted backgrounds or cards under HyperFrames' media rules. AI footage is preferred over stock/news footage to avoid copyright problems. Also includes a pronunciation-fix tool that swaps one narration line for a re-take, time-stretched as a whole onto the original line length so no frame timing changes. Content that needs 3D (terrain and contour lines, molecules, orbits, solids) is built automatically as seek-driven three.js frames inside HyperFrames (`skills/motion-explainer-video/references/threejs.md`). See `skills/motion-explainer-video/SKILL.md`.
 
 ## 授權
 
